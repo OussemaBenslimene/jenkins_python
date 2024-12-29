@@ -6,16 +6,14 @@ pipeline {
     }
 
     stages {
-       
-
         stage('Set up Virtual Environment') {
             steps {
                 echo 'Setting up virtual environment...'
                 // Create virtual environment
                 sh 'python3 -m venv ${VENV_DIR}'
-                // Activate virtual environment and install dependencies
+                // Activate virtual environment and install dependencies using bash and .
                 sh '''
-                    source ${VENV_DIR}/bin/activate
+                    . ${VENV_DIR}/bin/activate
                     pip install -r requirements.txt
                 '''
             }
@@ -26,7 +24,7 @@ pipeline {
                 echo 'Building the application...'
                 // Build inside virtual environment
                 sh '''
-                    source ${VENV_DIR}/bin/activate
+                    . ${VENV_DIR}/bin/activate
                     chmod +x build-script.sh
                     ./build-script.sh
                 '''
@@ -38,7 +36,7 @@ pipeline {
                 echo 'Running tests...'
                 // Set PYTHONPATH and run tests inside virtual environment
                 sh '''
-                    source ${VENV_DIR}/bin/activate
+                    . ${VENV_DIR}/bin/activate
                     export PYTHONPATH=$PYTHONPATH:$(pwd)
                     pytest > test-results.txt
                 '''
